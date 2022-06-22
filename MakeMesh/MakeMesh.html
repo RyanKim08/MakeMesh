@@ -20,10 +20,16 @@
         precision mediump float;
 
         varying vec4 fColor;
+        uniform bool useBlack;
+
 
         void main()
         {
-            gl_FragColor = fColor;
+            if (useBlack) {
+                gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+            } else {
+                gl_FragColor = fColor;
+            }
         }
     </script>
 
@@ -41,7 +47,7 @@
     </div>
     <div>
         <select id="menuval" size="7">
-            <option value="0" selected="selected">Black</option>
+            <option value="0" selected="selected">Plum</option>
             <option value="1">Red</option>
             <option value="2">Yellow</option>
             <option value="3">Green</option>

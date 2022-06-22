@@ -9,7 +9,7 @@ var index = 0;
 var cindex = 0;
 
 var colors = [
-    vec4(0.0, 0.0, 0.0, 1.0),  // black
+    vec4(0.9, 0.6, 0.9, 1.0),  // plum
     vec4(1.0, 0.0, 0.0, 1.0),  // red
     vec4(1.0, 1.0, 0.0, 1.0),  // yellow
     vec4(0.0, 1.0, 0.0, 1.0),  // green
@@ -25,6 +25,8 @@ var start = [0];
 
 var bufferId;
 var cBufferId;
+
+var useBlackLoc;
 
 window.onload = function init() {
     canvas = document.getElementById("gl-canvas");
@@ -85,13 +87,26 @@ window.onload = function init() {
     var vColor = gl.getAttribLocation(program, "vColor");
     gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vColor);
+
+    useBlackLoc = gl.getUniformLocation(program, "useBlack");
+    gl.uniform1i(useBlackLoc, false);
 }
 
 function render(showLine) {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     for (var i = 0; i < numPolygons; i++) {
-        gl.drawArrays(gl.TRIANGLE_FAN, start[i], numIndices[i]);
+        gl.drawArrays(gl.TRIANGLE_STRIP, start[i], numIndices[i]);
+
+        gl.uniform1i(useBlackLoc, true);
+
+        if (numIndices[i] > 2) {
+            for (var j = start[i]; j < start[i] + numIndices[i] - 2; j++) {
+                gl.drawArrays(gl.LINE_LOOP, j, 3)
+            }
+        }
+
+        gl.uniform1i(useBlackLoc, false);
     }
 
     if (showLine) {
